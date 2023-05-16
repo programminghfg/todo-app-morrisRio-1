@@ -1,15 +1,15 @@
 <script>
         import { onMount } from 'svelte';
         import { browser } from '$app/environment';
-
+        import ToDo from '../lib/components/ToDo.svelte';
         let todoText = '';
         let todos = [];
 
+        let test;
+
         onMount(() => {
                 if (browser) {
-                        const storedTodos = JSON.parse(
-                                localStorage.getItem('todos')
-                        );
+                        const storedTodos = JSON.parse(localStorage.getItem('todos'));
                         if (storedTodos) {
                                 todos = storedTodos;
                         }
@@ -31,8 +31,9 @@
                 saveTodos();
         }
 
-        function remove(index) {
+        function remove(event) {
                 //delete entry
+                let index = event.detail;
                 console.log(index);
                 todos.splice(index, 1);
                 todos = todos;
@@ -49,33 +50,5 @@
 
 {#each todos as todo, i}
         <!-- todo -->
-        <div class="todo-entry" class:done={todo.done}>
-                <!-- text -->
-                <div>{todo.text}</div>
-                <!-- checkboxen -->
-                <input type="checkbox" bind:checked={todo.done} />
-                <button
-                        class="delete"
-                        on:click={() => {
-                                remove(i);
-                        }}>X</button
-                >
-        </div>
+        <ToDo todoData={todo} bind:testProp={test} index={i} on:removeEvent={remove} />
 {/each}
-
-<style>
-        .delete {
-                background-color: white;
-                border: none;
-        }
-        .delete:hover {
-                background-color: grey;
-                font-weight: 700;
-        }
-        .done {
-                color: grey;
-        }
-        .todo-entry {
-                display: flex;
-        }
-</style>
